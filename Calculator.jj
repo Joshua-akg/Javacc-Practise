@@ -1,0 +1,99 @@
+options{
+    STATIC = false;
+}
+PARSER_BEGIN(Calculator)
+    import java.io.PrintStream;
+    class Calculator{
+        public static void main(String[] args) throws ParseException, TokenMgrError{
+            Calculator parser = new Calculator(System.in);
+            parser.Start(System.out);
+        }
+
+        double previousValue = 0.0;
+    }
+PARSER_END(Calculator)
+
+// Lexical specification
+SKIP : { " " } 
+TOKEN : { < EOL: "\n" | "\r" | "\r\n" > }
+TOKEN : { < PLUS : "+" > }
+TOKEN : { < MUL : "*" > }
+TOKEN : { < MINUS : "-" > }
+TOKEN : { < DIV : "/" > }
+TOKEN : { < OPAR : "(" > }
+TOKEN : { < CPAR : ")" > }
+TOKEN : { < PREV : "$" > }
+
+TOKEN : { < NUMBER : <DIGITS> | <DIGITS> "." <DIGITS> | <DIGITS> "." | "." <DIGITS>>}
+TOKEN : { < #DIGITS : (["0"-"9"])+ > }
+
+void Start(PrintStream printStream) throws NumberFormatException:
+{}
+{
+    (
+        previousValue = Expression()
+        <EOL>
+        {printStream.println(previousValue);}
+    )*
+    <EOF>
+}
+
+double Expression() throws NumberFormatException:
+{
+    double i;
+    double value;
+}
+{
+    value = Term()
+    (
+        <PLUS>
+        i = Term()
+        {value += i;}
+    |
+        <MINUS>
+        i = Term()
+        {value -= i;}
+    )*
+    {return value;}
+}
+
+// We use this to create terms and allow (*, /) to have a higher precendece over (+, -)
+// So 2x3+4x5 turns into -> TERM(2x3) PLUS+ TERM(4x5)
+double Term() throws NumberFormatException:
+{
+    double i;
+    double value;
+} 
+{
+    value = Primary()
+    (
+        <MUL>
+        i = Primary()
+        {value *= i;}
+    |
+        <DIV>
+        i = Primary()
+        {value -= i;}
+    )*
+    {return value;}
+}
+
+double Primary() throws NumberFormatException:
+{
+    Token t;
+    double d;
+}
+{
+    t=<NUMBER>
+    {return Double.parseDouble(t.image);}
+|
+    <PREV>
+    {return previousValue;}
+|
+    <OPAR> d=Expression() <CPAR>
+    {return d;}
+|
+    <MINUS> d=Primary()
+    {return -d;}
+
+}
