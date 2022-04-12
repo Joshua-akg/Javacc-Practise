@@ -2,7 +2,7 @@ PARSER_BEGIN(Evaluator)
 
 public class Evaluator {
     public static void main(String[] args) throws Exception {
-        int result = new Evaluator(new java.io.StringReader(args[0])).S();
+        int result = new Evaluator(new java.io.StringReader(args[0])).Start();
         System.out.println(result);
     }
 }
@@ -12,7 +12,7 @@ PARSER_END(Evaluator)
 SKIP:  { " " | "\t" | "\n" | "\r"                    }
 TOKEN: { "(" | ")" | "+" | "*" | <NUM: (["0"-"9"])+> }
 
-int S(): {int sum;}
+int Start(): {int sum;}
 {
   sum=E() <EOF> {return sum;}
 }
