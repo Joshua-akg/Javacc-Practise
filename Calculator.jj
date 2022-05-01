@@ -24,7 +24,7 @@ TOKEN : { < OPAR : "(" > }
 TOKEN : { < CPAR : ")" > }
 TOKEN : { < PREV : "$" > }
 
-TOKEN : { < NUMBER : <DIGITS> | <DIGITS> "." <DIGITS> | <DIGITS> "." | "." <DIGITS>>}
+TOKEN : { < NUMBER : <DIGITS> | <DIGITS> "." <DIGITS> | <DIGITS> "." | "." <DIGITS> > }
 TOKEN : { < #DIGITS : (["0"-"9"])+ > }
 
 void Start(PrintStream printStream) throws NumberFormatException:
@@ -86,13 +86,13 @@ double Primary() throws NumberFormatException:
 {
     t=<NUMBER>
     {return Double.parseDouble(t.image);}
-|
+    |
     <PREV>
     {return previousValue;}
-|
+    |
     <OPAR> d=Expression() <CPAR>
     {return d;}
-|
+    |
     <MINUS> d=Primary()
     {return -d;}
 

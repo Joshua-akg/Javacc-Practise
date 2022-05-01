@@ -1,9 +1,9 @@
-PARSER_BEGIN(SyntaxChecker)
+PARSER_BEGIN(SyntaxChecking)
 
-public class SyntaxChecker {
+public class SyntaxChecking {
     public static void main(String[] args) {
         try {
-            new SyntaxChecker(new java.io.StringReader(args[0])).S();
+            new SyntaxChecking(new java.io.StringReader(args[0])).S();
             System.out.println("Syntax is okay");
         } catch (Throwable e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
@@ -12,7 +12,7 @@ public class SyntaxChecker {
     }
 }
 
-PARSER_END(SyntaxChecker)
+PARSER_END(SyntaxChecking)
 
 SKIP:  { " " | "\t" | "\n" | "\r"                    }
 TOKEN: { "(" | ")" | "+" | "*" | <NUM: (["0"-"9"])+> }
